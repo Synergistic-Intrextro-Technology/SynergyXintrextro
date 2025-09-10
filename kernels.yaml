@@ -1,0 +1,29 @@
+# kernels.yaml
+default_fallback: safe_meta_fallback
+kernels:
+  - name: hybrid_core
+    adapter: integrations.intrextro_kernel_adapters.SynergyKernel
+    args: { mode: hybrid, device: cpu }
+    tags: [hybrid, routing, text]
+    timeout_ms: 5000
+    fallback: safe_meta_fallback
+
+  - name: quantum_core
+    adapter: integrations.intrextro_kernel_adapters.SynergyKernel
+    args: { mode: quantum, device: cpu }
+    tags: [quantum, text]
+    timeout_ms: 8000
+    fallback: safe_meta_fallback
+
+  - name: intrextro_text
+    adapter: integrations.intrextro_kernel_adapters.IntrextroKernel
+    args: {}
+    tags: [text, specialist]
+    timeout_ms: 4000
+    fallback: safe_meta_fallback
+
+  - name: safe_meta_fallback
+    adapter: integrations.intrextro_kernel_adapters.SafeMetaFallbackKernel
+    args: {}
+    tags: [safe, fallback]
+    timeout_ms: 1000
