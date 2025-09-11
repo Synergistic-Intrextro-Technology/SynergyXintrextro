@@ -22,12 +22,10 @@ class ConversationMemory:
         self.auto_save = config.get("memory.auto_save", True)
         self._conversations: Dict[str, Conversation] = {}
         self._lock = asyncio.Lock()
+        self._loaded = False
         
         # Ensure directory exists
         self.file_path.parent.mkdir(parents=True, exist_ok=True)
-        
-        # Load existing conversations
-        asyncio.create_task(self._load_conversations())
     
     async def _load_conversations(self) -> None:
         """Load conversations from JSONL file."""
@@ -85,13 +83,21 @@ class ConversationMemory:
             messages=messages
         )
     
+    async def _ensure_loaded(self) -> None:
+        """Ensure conversations are loaded."""
+        if not self._loaded:
+            await self._load_conversations()
+            self._loaded = True
+    
     async def get_conversation(self, conversation_id: str) -> Optional[Conversation]:
         """Get a conversation by ID."""
+        await self._ensure_loaded()
         async with self._lock:
             return self._conversations.get(conversation_id)
     
     async def save_conversation(self, conversation: Conversation) -> None:
         """Save a conversation."""
+        await self._ensure_loaded()
         async with self._lock:
             self._conversations[conversation.id] = conversation
             
@@ -100,6 +106,7 @@ class ConversationMemory:
     
     async def delete_conversation(self, conversation_id: str) -> bool:
         """Delete a conversation."""
+        await self._ensure_loaded()
         async with self._lock:
             if conversation_id in self._conversations:
                 del self._conversations[conversation_id]
@@ -112,11 +119,13 @@ class ConversationMemory:
     
     async def list_conversations(self) -> List[str]:
         """List all conversation IDs."""
+        await self._ensure_loaded()
         async with self._lock:
             return list(self._conversations.keys())
     
     async def get_conversation_summary(self, conversation_id: str) -> Optional[Dict]:
         """Get a summary of a conversation."""
+        await self._ensure_loaded()
         conversation = await self.get_conversation(conversation_id)
         if not conversation:
             return None
@@ -136,6 +145,7 @@ class ConversationMemory:
     
     async def search_conversations(self, query: str, limit: int = 10) -> List[Dict]:
         """Search conversations by content."""
+        await self._ensure_loaded()
         results = []
         query_lower = query.lower()
         
@@ -156,6 +166,7 @@ class ConversationMemory:
     
     async def cleanup_old_conversations(self, max_age_days: int = 30) -> int:
         """Remove conversations older than specified days."""
+        await self._ensure_loaded()
         from datetime import datetime, timedelta
         
         cutoff = datetime.now() - timedelta(days=max_age_days)
