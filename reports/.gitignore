@@ -1,0 +1,6 @@
+# Keep reports directory structure but ignore actual reports
+*.json
+*.html
+*.md
+!.gitkeep
+!examples/
