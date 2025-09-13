@@ -304,7 +304,7 @@ export class SynergyFramework {
 export interface ProcessResult<T> {
   success: boolean;
   data: T;
-  qualityResult: any;
+  qualityResult: QualityResult;
   message?: string;
   processingTime: number;
   systemMetrics?: any;
