@@ -6,6 +6,8 @@ from ..config.manager import Config
 from ..core.providers import LLMProvider, ProviderUnavailableError
 from ..core.openai_provider import OpenAIProvider
 from ..core.ollama_provider import OllamaProvider
+from ..core.azure_provider import AzureProvider
+from ..core.huggingface_provider import HuggingFaceProvider
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,8 @@ class ProviderManager:
         provider_classes: Dict[str, Type[LLMProvider]] = {
             "openai": OpenAIProvider,
             "ollama": OllamaProvider,
-            # TODO: Add Azure and HuggingFace providers
+            "azure": AzureProvider,
+            "huggingface": HuggingFaceProvider,
         }
         
         # Initialize providers that have configuration
