@@ -199,8 +199,6 @@ export interface GateResult {
   timestamp: Date;
 }
 
-interface QualityHistory extends GateResult {}
-
 export interface QualityTrends {
   totalExecutions: number;
   passRate: number;
