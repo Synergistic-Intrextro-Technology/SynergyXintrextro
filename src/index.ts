@@ -104,7 +104,9 @@ class SecurityCheck implements QualityCheck {
       issues.push('Potential password exposure detected');
       score -= 30;
     }
-    if (inputStr.includes('eval(')) {
+    // Improved check for dangerous eval usage (e.g., eval(, eval (, window.eval(, etc.)
+    const evalPattern = /\b(?:window\.)?eval\s*\(/i;
+    if (evalPattern.test(inputStr)) {
       issues.push('Dangerous eval() usage detected');
       score -= 50;
     }
