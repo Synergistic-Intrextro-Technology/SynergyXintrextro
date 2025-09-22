@@ -1,0 +1,101 @@
+# SynergyXintrextro Unified Docker Compose
+version: '3.8'
+
+services:
+  # Main unified orchestrator
+  synergyx-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified
+    ports:
+      - "8000:8000"  # API server
+      - "8001:8001"  # Kernel router
+    environment:
+      - EXECUTION_MODE=interactive
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./config.yaml:/app/config.yaml
+    command: ["python", "main.py", "--mode", "api_server", "--host", "0.0.0.0"]
+    restart: unless-stopped
+    networks:
+      - synergyx-network
+
+  # Kernel router service
+  kernel-router:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified
+    ports:
+      - "8001:8001"
+    environment:
+      - APP_VERSION=0.1.0
+      - KERNELS_YAML=kernels.yaml
+      - KERNELS_JSON=kernels.json
+      - METRIC_WINDOW=500
+    volumes:
+      - ./logs:/app/logs
+      - ./kernels.yaml:/app/kernels.yaml
+      - ./kernels.json:/app/kernels.json
+    command: ["python", "main.py", "--mode", "kernel_router"]
+    restart: unless-stopped
+    depends_on:
+      - synergyx-orchestrator
+    networks:
+      - synergyx-network
+
+  # Synergy orchestrator service
+  synergy-orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified
+    environment:
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    command: ["python", "main.py", "--mode", "synergy_orchestrator"]
+    restart: unless-stopped
+    depends_on:
+      - synergyx-orchestrator
+    networks:
+      - synergyx-network
+
+  # Modal fusion service
+  modal-fusion:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified
+    environment:
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    command: ["python", "main.py", "--mode", "modal_fusion"]
+    restart: unless-stopped
+    depends_on:
+      - synergyx-orchestrator
+    networks:
+      - synergyx-network
+
+  # Benchmark runner (runs once)
+  benchmark-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.unified
+    environment:
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+    command: ["python", "main.py", "--mode", "benchmark"]
+    restart: "no"
+    depends_on:
+      - synergyx-orchestrator
+    networks:
+      - synergyx-network
+
+networks:
+  synergyx-network:
+    driver: bridge

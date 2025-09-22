@@ -68,6 +68,7 @@ advanced-nlp = [
 [project.scripts]
 synergyx-chat = "synergyx.interfaces.cli:main"
 synergyx-bench = "synergyx.benchmarks.run:main"
+synergyx-unified = "main:main"
 
 [project.urls]
 Homepage = "https://github.com/Synergistic-Intrextro-Technology/SynergyXintrextro"
