@@ -67,7 +67,7 @@ export class QualityController {
         const failedResult: QualityResult = {
           passed: false,
           score: 0,
-          message: `Check '${check.name}' failed with error: ${error}`,
+          message: `Check '${check.name}' failed with error: ${error instanceof Error ? error.message : String(error)}`,
           suggestions: ['Review check implementation', 'Verify input data']
         };
         results.push(failedResult);
