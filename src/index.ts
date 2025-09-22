@@ -301,20 +301,42 @@ export class SynergyFramework {
   }
 }
 
+// --- Type-safe interfaces for system status and metrics ---
+
+// Example: Based on usage in demonstrateFramework and getSystemStatus
+export interface AdaptiveStatus {
+  totalStrategies: number;
+  [key: string]: any; // Extend as needed
+}
+
+export interface HealthStatus {
+  isHealthy: boolean;
+  [key: string]: any; // Extend as needed
+}
+
+export interface QualityStatus {
+  trend: string;
+  [key: string]: any; // Extend as needed
+}
+
+export interface CollaborationStatus {
+  [key: string]: any; // Define properties as needed
+}
+
 export interface ProcessResult<T> {
   success: boolean;
   data: T;
   qualityResult: QualityResult;
   message?: string;
   processingTime: number;
-  systemMetrics?: any;
+  systemMetrics?: StrategyMetrics;
 }
 
 export interface SystemStatus {
-  adaptive: any;
-  health: any;
-  quality: any;
-  collaboration: any;
+  adaptive: AdaptiveStatus;
+  health: HealthStatus;
+  quality: QualityStatus;
+  collaboration: CollaborationStatus;
   timestamp: Date;
 }
 
