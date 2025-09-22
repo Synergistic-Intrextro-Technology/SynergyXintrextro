@@ -101,10 +101,10 @@ export class MetricsCollector {
   private assessSystemHealth(metrics: HealthMetric[]): boolean {
     // Simple health assessment - can be made more sophisticated
     for (const metric of metrics) {
-      if (metric.name.includes('error') && metric.aggregation!.latest > 0) {
+      if (metric.name.includes('error') && (metric.aggregation?.latest ?? 0) > 0) {
         return false;
       }
-      if (metric.name.includes('latency') && metric.aggregation!.avg > 5000) {
+      if (metric.name.includes('latency') && (metric.aggregation?.avg ?? 0) > 5000) {
         return false; // More than 5s average latency
       }
     }
