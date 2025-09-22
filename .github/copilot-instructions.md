@@ -139,7 +139,7 @@ class NewProvider(LLMProvider):
         pass
     
     async def stream_generate(self, prompt: str, **kwargs) -> AsyncIterator[str]:
-        # Implementation  
+        # Implementation
         pass
 ```
 
