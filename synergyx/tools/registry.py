@@ -9,6 +9,8 @@ from .code_analysis import PythonASTAnalyzer, CodeLinterTool
 from .data_analysis import DataAnalyzerTool, DataExplainerTool, CSVUploaderTool
 from .web_fetcher import WebFetcherTool
 from .rag_tools import RAGSearchTool, RAGAnswerTool, RAGIndexTool
+from .field_observation import NocturnalFieldInsightTool
+from .introspective_integration import IntrospectiveIntegrationTool
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +41,12 @@ def register_all_tools() -> List[str]:
         RAGSearchTool(),
         RAGAnswerTool(),
         RAGIndexTool(),
+
+        # Field operations
+        NocturnalFieldInsightTool(),
+
+        # Introspective planning
+        IntrospectiveIntegrationTool(),
     ]
     
     registered_names = []
